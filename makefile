@@ -38,8 +38,12 @@ infra-up:
 
 up-confirmed:
 	terraform -chdir=./terraform apply -auto-approve
+
 infra-down:
 	terraform -chdir=./terraform destroy
+
+down-confirmed:
+	terraform -chdir=./terraform destroy -auto-approve
 
 infra-config:
 	terraform -chdir=./terraform output
