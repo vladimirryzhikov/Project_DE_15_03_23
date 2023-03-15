@@ -28,7 +28,7 @@ provider "aws" {
 
 }
 
-resource "aws_instance" "A-01" {
+resource "aws_instance" "A_01" {
 
   ami = var.ami
   #"ami-09e1162c87f73958b"
