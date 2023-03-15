@@ -1,0 +1,10 @@
+1. 750 hr of EC2 instance per month
+2. 5 GB storage S3 bucket
+3. GLUE etl service 1M objects stored and first 1M accesses 
+4. SQS? 1M requests (is it kafka?)
+5. ELB 750 hr free per month
+CloudFormation(terraform) 1000 operations per month
+
+Free trial
+1. Redshift 2 month 750 hr DC2.Large node hours per month 
+2. QuickSight analytics 30 days 10 GB of SPICE capacity for the first 30 days for free for a total of 4 users
