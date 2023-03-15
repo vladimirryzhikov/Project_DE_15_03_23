@@ -36,6 +36,8 @@ tf-init:
 infra-up:
 	terraform -chdir=./terraform apply
 
+up-confirmed:
+	terraform -chdir=./terraform apply -auto-approve
 infra-down:
 	terraform -chdir=./terraform destroy
 
