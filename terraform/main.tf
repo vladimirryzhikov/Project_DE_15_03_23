@@ -28,7 +28,7 @@ provider "aws" {
 
   region = var.aws_region
   #"eu-north-1"
-
+  #profile = "default"
 }
 
 #resource "aws_instance" "A-01" {
@@ -138,14 +138,35 @@ resource "aws_instance" "A_01" {
 
   }
 
+  user_data = file("script.sh")
+  /* <<EOF
+#!/bin/bash
+sudo apt-get -y update
+sudo touch log.txt
+EOF */
+
+
   # ADD Setup here 
-  user_data = <<EOF
-  !/bin/bash
 
-  echo "____________START SETUP____"
-  echo "its been setup here someday"
-  echo " replace with comands to install software"
-  echo "____________END SETUP______"
 
-  EOF
 }
+
+# EC2 budget constraint
+resource "aws_budgets_budget" "ec2" {
+  name              = "budget-ec2-monthly"
+  budget_type       = "COST"
+  limit_amount      = "5"
+  limit_unit        = "USD"
+  time_period_end   = "2087-06-15_00:00"
+  time_period_start = "2023-03-15_00:00"
+  time_unit         = "MONTHLY"
+
+  notification {
+    comparison_operator        = "GREATER_THAN"
+    threshold                  = 100
+    threshold_type             = "PERCENTAGE"
+    notification_type          = "FORECASTED"
+    subscriber_email_addresses = [var.alert_email_id]
+  }
+}
+

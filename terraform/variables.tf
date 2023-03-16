@@ -11,7 +11,8 @@ variable "network_interface_id" {
 }
 
 variable "ami" {
-  type    = string
+  type = string
+  #default = "ami-0d32f1e246a0306ec"
   default = "ami-09e1162c87f73958b"
 
 }

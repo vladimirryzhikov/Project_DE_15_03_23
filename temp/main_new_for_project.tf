@@ -84,7 +84,7 @@ resource "aws_instance" "A_01" {
   }
 
   user_data = <<EOF
-#!/bin/bash
+  #!/bin/bash
 echo "-------------------------START SETUP---------------------------"
 sudo apt-get -y update
 sudo apt-get -y install \
