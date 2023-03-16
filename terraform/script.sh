@@ -35,7 +35,6 @@ sudo apt-get -y install docker-ce docker-ce-cli containerd.io docker-compose-plu
 sudo chmod 666 /var/run/docker.sock
 sudo apt install make
 echo 'Clone git repo to EC2' >> /tmp/log.txt
-fucking private repo!!!!!
 cd /home/ubuntu && git clone https://github.com/vladimirryzhikov/Project_DE_15_03_23
 echo 'CD to Project directory' >> /tmp/log.txt
 cd Project_DE_15_03_23 
