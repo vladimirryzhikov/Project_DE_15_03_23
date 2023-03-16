@@ -1,4 +1,7 @@
 terraform {
+
+  # Cloud cinfig to be removed credentials for production(could be changed in real
+  # cloud version of terraform.cloud)
   cloud {
     organization = "Sniper_il_projects"
 
