@@ -162,4 +162,5 @@ override.tf.json
 terraform.rc
 Footer
 
+*.pem
 metabase-data/
