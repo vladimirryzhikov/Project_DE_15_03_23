@@ -1,6 +1,6 @@
 # Project starting at 15_03
 
-# The goals is
+## The goals is
 
 1. Learn new cloud provider AWS
 2. maximum use of terraform and make to automate stuff
