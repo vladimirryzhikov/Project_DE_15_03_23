@@ -6,6 +6,7 @@ from datetime import datetime
 from typing import Any, List, Tuple
 
 import boto3
+import boto3.session
 import psycopg2
 from faker import Faker
 
@@ -114,7 +115,11 @@ def generate_data(iteration: int, orders_bucket: str = "app-orders") -> None:
     customer_data = _get_customer_data(cust_ids)
 
     # send orders data to S3
-    s3 = boto3.resource(
+    session = boto3.Session(
+        aws_access_key_id=settings.AWS_SERVER_PUBLIC_KEY,
+        aws_secret_access_key=settings.AWS_SERVER_SECRET_KEY,
+    )
+    s3 = session.resource(
         "s3",
         # endpoint_url="http://cloud-store:9000",
         # aws_access_key_id="AKIAIOSFODNN7EXAMPLE",
