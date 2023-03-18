@@ -56,8 +56,8 @@ def _get_orders(cust_ids: List[int], num_orders: int) -> str:
     ]
     data = ""
     for _ in range(num_orders):
-        data += f'{uuid.uuid4()},{random.choice(cust_ids)},'
-        data += f'{uuid.uuid4()},{random.choice(items)},'
+        data += f"{uuid.uuid4()},{random.choice(cust_ids)},"
+        data += f"{uuid.uuid4()},{random.choice(items)},"
         data += f'{datetime.now().strftime("%y-%m-%d %H:%M:%S")}'
         data += "\n"
 
@@ -116,17 +116,15 @@ def generate_data(iteration: int, orders_bucket: str = "app-orders") -> None:
     # send orders data to S3
     s3 = boto3.resource(
         "s3",
-        endpoint_url="http://cloud-store:9000",
-        aws_access_key_id="AKIAIOSFODNN7EXAMPLE",
-        aws_secret_access_key="wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
-        region_name="us-east-1",
+        # endpoint_url="http://cloud-store:9000",
+        # aws_access_key_id="AKIAIOSFODNN7EXAMPLE",
+        # aws_secret_access_key="wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
+        region_name="eu-north-1",
     )
     # create bucket if not exists
     if not s3.Bucket(orders_bucket) in s3.buckets.all():
         s3.create_bucket(Bucket=orders_bucket)
-    s3.Object(orders_bucket, f"data_{str(iteration)}.csv").put(
-        Body=orders_data
-    )
+    s3.Object(orders_bucket, f"data_{str(iteration)}.csv").put(Body=orders_data)
 
     # send customers data to customer_db
     with DatabaseConnection().managed_cursor() as curr:
@@ -148,9 +146,7 @@ def generate_data(iteration: int, orders_bucket: str = "app-orders") -> None:
 class DatabaseConnection:
     def __init__(self):
         # DO NOT HARDCODE !!!
-        self.conn_url = (
-            "postgresql://customer_ms:password@customer_db:5432/customer"
-        )
+        self.conn_url = "postgresql://customer_ms:password@customer_db:5432/customer"
 
     @contextmanager
     def managed_cursor(self, cursor_factory=None):
