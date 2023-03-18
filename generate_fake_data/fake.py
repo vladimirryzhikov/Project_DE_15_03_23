@@ -1,6 +1,7 @@
 from faker import Faker
 from datetime import datetime
 from faker.providers import BaseProvider
+import random
 
 fake = Faker()
 
