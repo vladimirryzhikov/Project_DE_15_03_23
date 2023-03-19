@@ -7,6 +7,8 @@ from pyspark.sql.functions import *
 from awsglue.context import GlueContext
 from pyspark.sql import SparkSession
 
+# NEED TO BE TESTED WHEN GLUE AVALAIBILITY IS DONE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 # Initialize a Spark context
 sc = SparkContext()
 glueContext = GlueContext(sc)

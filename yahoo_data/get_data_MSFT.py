@@ -1,7 +1,7 @@
 import yfinance as yf
 import os
 
-ticker = "MSFT"
+ticker = "MSFT"  # WORKING FUNCTIONS ODF DATA TICKER TESTED ON MSFT NEED TO LOOP OVER ALL TICKETS AND ADD THE CODE TO WORKING SCRIPT
 
 # create the directory if it doesn't exist
 if not os.path.exists(f"data/{ticker}"):
