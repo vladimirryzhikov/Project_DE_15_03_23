@@ -108,6 +108,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+devp/
 devp
 
 # Spyder project settings
@@ -163,5 +164,7 @@ override.tf.json
 terraform.rc
 Footer
 
-*.pem
+.pem
 metabase-data/
+yahoo_data/data/
+.csv

@@ -109,30 +109,25 @@ def _customer_data_insert_query() -> str:
     """
 
 
-def generate_data(iteration: int, orders_bucket: str = "app-orders") -> None:
+def generate_data(iteration: int, bronzelayer: str = "app-orders") -> None:
     cust_ids = [random.randint(1, 10000) for _ in range(1000)]
     orders_data = _get_orders(cust_ids, 10000)
     customer_data = _get_customer_data(cust_ids)
 
     # send orders data to S3
-    session = boto3.Session(
-        aws_access_key_id=settings.AWS_SERVER_PUBLIC_KEY,
-        aws_secret_access_key=settings.AWS_SERVER_SECRET_KEY,
-    )
-    s3 = session.resource(
-        "s3",
-        # endpoint_url="http://cloud-store:9000",
-        # aws_access_key_id="AKIAIOSFODNN7EXAMPLE",
-        # aws_secret_access_key="wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
-        region_name="eu-north-1",
-    )
+    session = boto3.Session(profile_name="default")
+
+    s3 = session.resource("s3")
     # create bucket if not exists
-    if not s3.Bucket(orders_bucket) in s3.buckets.all():
-        s3.create_bucket(Bucket=orders_bucket)
-    s3.Object(orders_bucket, f"data_{str(iteration)}.csv").put(Body=orders_data)
+    if not s3.Bucket("bronzelayer") in s3.buckets.all():
+        s3.create_bucket(
+            Bucket="bronzelayer",
+            CreateBucketConfiguration={"LocationConstraint": "eu-north-1"},
+        )
+    s3.Object("bronzelayer", f"data_{str(iteration)}.csv").put(Body=orders_data)
 
     # send customers data to customer_db
-    with DatabaseConnection().managed_cursor() as curr:
+    """ with DatabaseConnection().managed_cursor() as curr:
         insert_query = _customer_data_insert_query()
         for cd in customer_data:
             curr.execute(
@@ -146,9 +141,10 @@ def generate_data(iteration: int, orders_bucket: str = "app-orders") -> None:
                     cd[5],
                 ),
             )
+ """
 
 
-class DatabaseConnection:
+""" class DatabaseConnection:
     def __init__(self):
         # DO NOT HARDCODE !!!
         self.conn_url = "postgresql://customer_ms:password@customer_db:5432/customer"
@@ -163,7 +159,7 @@ class DatabaseConnection:
         finally:
             self.curr.close()
             self.conn.close()
-
+ """
 
 if __name__ == "__main__":
     itr = 1
