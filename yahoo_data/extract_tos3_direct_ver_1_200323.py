@@ -13,48 +13,33 @@ def retrieve_tickers():
     return data_table
 
 
-def save_tickers(tickers, filename):
-    """Saves the list of tickers to a CSV file"""
-    tickers.to_csv(filename, columns=["Symbol"], index=False)
+def upload_to_aws(df, s3_bucket, s3_file):
+    """Uploads a dataframe to an S3 bucket"""
+    s3 = boto3.client("s3")
+    try:
+        csv_buffer = df.to_csv(index=False)
+        s3.put_object(Body=csv_buffer, Bucket=s3_bucket, Key=s3_file)
+        print(f"Data uploaded to S3 bucket: {s3_file}")
+        return True
+    except NoCredentialsError:
+        print("Credentials not available")
+        return False
 
 
 def download_data(ticker, start_date, end_date):
     """Downloads historical data for a given ticker and date range"""
     try:
         data = yf.download(ticker, start=start_date, end=end_date)
-        data["ticker"] = ticker  # add the colukn ticker to dataframe
-        data.to_csv(f"{ticker}.csv", index=False)
-        print(f"Downloaded data for {ticker}")
-        return True
+        data["ticker"] = ticker  # add the column ticker to dataframe
+        return data
     except:
         print(f"Error downloading data for {ticker}")
-        return False
-
-
-def upload_to_aws(local_file, s3_bucket, s3_file):
-    """Uploads a file to an S3 bucket"""
-    s3 = boto3.client("s3")
-    try:
-        s3.upload_file(local_file, s3_bucket, s3_file)
-        print(f"File uploaded to S3 bucket: {s3_file}")
-        return True
-    except FileNotFoundError:
-        print(f"{local_file} not found")
-        return False
-    except NoCredentialsError:
-        print("Credentials not available")
-        return False
+        return None
 
 
 def main(start_date="2012-01-01", end_date="2022-01-01"):
     # Retrieve the list of tickers
     tickers_table = retrieve_tickers()
-    save_tickers(tickers_table, "all_tickers.csv")
-    save_tickers(tickers_table["Symbol"], "tickers.csv")
-
-    # Upload the tickers files to S3
-    upload_to_aws("all_tickers.csv", "bronzelayer", "all_tickers.csv")
-    upload_to_aws("tickers.csv", "bronzelayer", "tickers.csv")
 
     # Get the list of tickers
     tickers = tickers_table["Symbol"].tolist()
@@ -65,11 +50,11 @@ def main(start_date="2012-01-01", end_date="2022-01-01"):
 
     # Loop over each ticker and download the historical data
     for ticker in tickers:
-        if download_data(ticker, start_date, end_date):
-            local_file = f"{ticker}.csv"
+        data = download_data(ticker, start_date, end_date)
+        if data is not None:
             s3_bucket = "bronzelayer"
             s3_file = f"historical_data/{ticker}.csv"
-            upload_to_aws(local_file, s3_bucket, s3_file)
+            upload_to_aws(data, s3_bucket, s3_file)
 
 
 if __name__ == "__main__":
