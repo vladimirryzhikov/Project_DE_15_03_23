@@ -1,4 +1,5 @@
 import pandas as pd
+import string
 
 
 def get_sp500_tickers():
@@ -12,6 +13,13 @@ def get_sp500_tickers():
     data_table = pd.read_html(sp500url)[0]
     data_table.to_csv("data/all_tickers.csv", index=False)
     tickers = data_table["Symbol"].tolist()
+    # lets check the names of tickers
+    filtered_tickers = [
+        ticker
+        for ticker in tickers
+        if not all(c in string.ascii_letters for c in ticker)
+    ]
+    print(filtered_tickers)
     return tickers
 
 
