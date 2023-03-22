@@ -13,10 +13,11 @@ logger.setLevel(logging.INFO)
 s3_bucket = "bronzelayer"
 s3_logs_folder = "logs/"
 
-s3 = boto3.client("s3")
+s3 = boto3.client("s3", endpoint_url="http://localhost:4566")
 
 # in that function we need to apply some min transformation
 # prior to the different names for two tickers BRK.b -> BRK-B and BRK.H -> BRK-H
+
 
 def retrieve_tickers():
     """Retrieves the list of all S&P500 stock market companies from Wikipedia"""

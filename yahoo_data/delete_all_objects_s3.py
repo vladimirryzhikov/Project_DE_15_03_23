@@ -6,7 +6,7 @@ def delete_all_objects_in_bucket(bucket_name):
     """
     Delete all objects in a given S3 bucket
     """
-    s3 = boto3.resource("s3")
+    s3 = boto3.resource("s3", endpoint_url="http://localhost:4566")
     bucket = s3.Bucket(bucket_name)
     for obj in bucket.objects.all():
         obj.delete()
@@ -22,7 +22,7 @@ if __name__ == "__main__":
     bucket_name = args.bucket
 
     # Check if bucket exists
-    s3 = boto3.resource("s3")
+    s3 = boto3.resource("s3", endpoint_url="http://localhost:4566")
     if not any(bucket.name == bucket_name for bucket in s3.buckets.all()):
         print(f"Error: Bucket {bucket_name} does not exist")
     else:
