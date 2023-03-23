@@ -10,6 +10,6 @@ for obj in bucket.objects.all():
     print(obj.key)
 
 # View the contents of an object
-obj = s3.Object(bucket_name, "path/to/object")
+obj = s3.Object(bucket_name, "historical_data")
 contents = obj.get()["Body"].read().decode("utf-8")
 print(contents)
