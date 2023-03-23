@@ -50,7 +50,7 @@ df = df.filter(
 df = df.withColumn(
     "Daily_Return", ((col("Close") - col("Open")) / col("Open")) * 100
 )  # Calculate daily return percentage
-df.show()
+df.show()  # show the results
 # Write the transformed data to a new S3 bucket
 output_path = f"s3a://{destination_bucket}/output"
 df.write.mode("overwrite").parquet(output_path)
