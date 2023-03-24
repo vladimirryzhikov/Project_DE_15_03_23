@@ -50,6 +50,45 @@ def download_data(ticker):
         return None
 
 
+def download_shares(ticker):
+    """Downloads shares data for a given ticker"""
+    try:
+        # Download the shares data
+        shares = yf.Ticker(ticker).get_shares_full(start="2022-01-01", end=None)
+        # shares.columns = ["Date", "Shares"]
+        # shares["ticker"] = ticker
+
+        # Download the earnings data
+        # earnings = yf.Ticker(ticker).earnings_dates()
+        # earnings = earnings[["Date", "Earnings"]]
+        # earnings.columns = ["Date", "Earnings"]
+        # earnings["ticker"] = ticker
+
+        # Concatenate the shares and earnings dataframes
+        # data = pd.concat([shares, earnings], axis=1)
+        logger.info(f"Downloaded shares and earnings data for {ticker}")
+        return shares
+    except:
+        logger.error(f"Error downloading shares and earnings data for {ticker}")
+        return None
+
+
+def download_earnings(ticker):
+    """Downloads earnings data for a given ticker"""
+    try:
+        # Download the earnings data
+        earnings = yf.Ticker(ticker).earnings_dates
+        # earnings = earnings[["Date", "Earnings"]]
+        # earnings.columns = ["Date", "Earnings"]
+        # earnings["ticker"] = ticker
+
+        logger.info(f"Downloaded earnings data for {ticker}")
+        return earnings
+    except:
+        logger.error(f"Error downloading earnings data for {ticker}")
+        return None
+
+
 def main():
     # Retrieve the list of tickers
     tickers_table = retrieve_tickers()
@@ -57,10 +96,10 @@ def main():
     # Get the list of tickers
     # tickers = tickers_table["Symbol"].tolist()
     # Test script with 3 tickers
-    tickers = ["AAPL", "MSFT", "BRK.B"]
+    tickers = ["AAPL", "MSFT", "BRK-B"]
     # Change the two elements of the list of tickers prior to wrong names
 
-    tickers[tickers.index("BRK.B")] = "BRK-B"
+    # tickers[tickers.index("BRK.B")] = "BRK-B"
 
     # Loop over each ticker and download the historical data
     for ticker in tickers:
@@ -71,6 +110,26 @@ def main():
                 logger.info(f"Uploaded data for {ticker} to S3")
             else:
                 logger.warning(f"Failed to upload data for {ticker} to S3")
+
+            # Download shares data
+            shares_data = download_shares(ticker)
+            if shares_data is not None:
+                s3_file = f"shares_data/{ticker}.csv"
+                if upload_to_aws(shares_data, s3_bucket, s3_file):
+                    logger.info(f"Uploaded shares data for {ticker} to S3")
+                else:
+                    logger.warning(f"Failed to upload shares data for {ticker} to S3")
+
+            # Download earnings data
+            earnings_data = download_earnings(ticker)
+            if earnings_data is not None:
+                s3_file = f"earnings_data/{ticker}.csv"
+                if upload_to_aws(earnings_data, s3_bucket, s3_file):
+                    logger.info(f"Uploaded shares and earnings data for {ticker} to S3")
+                else:
+                    logger.warning(
+                        f"Failed to upload shares and earnings data for {ticker} to S3"
+                    )
 
 
 if __name__ == "__main__":

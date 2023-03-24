@@ -4,7 +4,7 @@ import boto3
 s3 = boto3.client("s3", endpoint_url="http://localhost:4566")
 
 # Set the bucket name
-bucket_name = "bronzelayer"
+bucket_name = "testbucket"
 
 # Set the region (replace with your desired region)
 region = "eu-north-1"
