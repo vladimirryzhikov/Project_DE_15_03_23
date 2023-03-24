@@ -23,7 +23,8 @@ def retrieve_tickers():
     """Retrieves the list of all S&P500 stock market companies from Wikipedia"""
     sp500url = "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies"
     data_table = pd.read_html(sp500url)[0]
-    return data_table
+    tickers_list = data_table["Symbol"].tolist()
+    return tickers_list
 
 
 def upload_to_aws(df, s3_bucket, s3_file):
@@ -91,15 +92,15 @@ def download_earnings(ticker):
 
 def main():
     # Retrieve the list of tickers
-    tickers_table = retrieve_tickers()
+    tickers = retrieve_tickers()
 
     # Get the list of tickers
     # tickers = tickers_table["Symbol"].tolist()
     # Test script with 3 tickers
-    tickers = ["AAPL", "MSFT", "BRK-B"]
+    # tickers = ["AAPL", "MSFT", "BRK-B"]
     # Change the two elements of the list of tickers prior to wrong names
 
-    # tickers[tickers.index("BRK.B")] = "BRK-B"
+    tickers[tickers.index("BRK.B")] = "BRK-B"
 
     # Loop over each ticker and download the historical data
     for ticker in tickers:
