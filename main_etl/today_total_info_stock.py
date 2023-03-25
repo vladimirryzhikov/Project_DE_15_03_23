@@ -10,8 +10,8 @@ earnings_folder = "earnings/"
 
 import yfinance as yf
 
-ticker = "AAPL"
-info = yf.Ticker(ticker)._fast_info
-for key, value in info.items():
+ticker = "BF-B"
+fast_info = yf.Ticker(ticker)._fast_info
+for key, value in fast_info.items():
     print(key, value)
 # print(f"The latest close price for {ticker} is: {latest_close_price}")
