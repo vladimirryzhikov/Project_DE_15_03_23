@@ -39,6 +39,7 @@ def upload_to_aws(df, s3_bucket, s3_file):
         return False
 
 
+# saving localy is nessesary because of localstack deletion on resrtart !!!!
 def download_data(ticker):
     """Downloads historical data for a given ticker"""
     try:
