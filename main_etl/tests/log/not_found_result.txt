@@ -1,0 +1,1 @@
+['ANET', 'BRK.B', 'BRK.B', 'BF.B', 'BF.B', 'FOX', 'IBM', 'NWS', 'NVDA']
