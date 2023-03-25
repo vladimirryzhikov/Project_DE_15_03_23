@@ -1,0 +1,11 @@
+ANET data missing in data/shares/
+IBM data missing in data/shares/
+NVDA data missing in data/shares/
+BF.B data missing in data/shares/
+
+
+BF.B data missing in data/earnings/
+FOX data missing in data/earnings/
+
+NWS data missing in data/earnings/
+
