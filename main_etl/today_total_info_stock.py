@@ -10,7 +10,7 @@ earnings_folder = "earnings/"
 
 import yfinance as yf
 
-ticker = "BF-B"
+ticker = "BRK-B"
 fast_info = yf.Ticker(ticker)._fast_info
 for key, value in fast_info.items():
     print(key, value)
