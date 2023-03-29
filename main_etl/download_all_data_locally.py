@@ -14,6 +14,11 @@ def retrieve_tickers():
     """Read the csv tickers file and get the list of tickers"""
     data_table = pd.read_csv(f"{data_folder}{tickers_file}")
     tickers_list = data_table["Symbol"].tolist()  # convert to list
+
+    # Rename 2 tickers due to mistakes in Yahoo naming
+    tickers_list[tickers_list.index("BRK.B")] = "BRK-B"
+    tickers_list[tickers_list.index("BF.B")] = "BF-B"
+
     return tickers_list
 
 
