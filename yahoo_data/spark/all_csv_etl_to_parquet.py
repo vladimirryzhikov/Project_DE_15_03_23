@@ -39,11 +39,14 @@ destination_bucket = "silverlayer"
 df = (
     spark.read.format("csv")
     .option("header", "true")
-    .load(f"s3a://{source_bucket}/*/*.csv")
+    .option("recursiveFileLookup", "true")
+    .load(
+        f"s3a://{source_bucket}/data/*/*.csv"
+    )  # problems with the schema and file pathes need to include only history and today data
 )
 df.printSchema()
 
-# Transformations
+""" # Transformations
 df = df.filter(
     col("Close") > 50
 )  # Keep only records where the closing price is over 50
@@ -53,7 +56,7 @@ df = df.withColumn(
 df.show()  # show the results
 # Write the transformed data to a new S3 bucket
 output_path = f"s3a://{destination_bucket}/output"
-df.write.mode("overwrite").parquet(output_path)
+df.write.mode("overwrite").parquet(output_path) """
 
 
 """ we're reading in all CSV files from the source S3 bucket,

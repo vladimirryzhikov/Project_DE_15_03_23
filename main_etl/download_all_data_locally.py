@@ -27,7 +27,9 @@ def download_data(ticker):
     try:
         data = yf.download(ticker, group_by="Ticker")
         data["ticker"] = ticker  # add the colukn ticker to dataframe
-        data.to_csv(f"{data_folder}{historical_data_folder}{ticker}.csv", index=True)
+        data.to_csv(
+            f"{data_folder}{historical_data_folder}{ticker}.csv", index=True
+        )  # need to check the schema and date column
         print(f"Downloaded data for {ticker}")
         return True
     except:
@@ -79,12 +81,9 @@ def download_earnings(ticker):
 def main(start_date="2012-01-01", end_date="2022-01-01"):
     # Retrieve the list of tickers
     tickers = retrieve_tickers()
-    tickers[
-        tickers.index("BRK.B")
-    ] = "BRK-B"  # the name for that ticker in yahoo is BRK-B
-    # Set the date range for the data
-    # start_date = "2022-02-01"
-    # end_date = "2022-02-10"
+
+    # Not all data we can download due to Yahho restriction or missed data
+    # so we add counts for data and decide on the counts whst data we load to s3 bucket later to analyse
     count_h = 0
     count_sh = 0
     count_e = 0
@@ -92,8 +91,9 @@ def main(start_date="2012-01-01", end_date="2022-01-01"):
     for ticker in tickers:
         data = download_data(ticker)
         if data is not None:
+            count_h += 1
             print(
-                f"Downloaded data for {ticker} to {data_folder}{historical_data_folder}"
+                f"Downloaded {count_h} data for {ticker} to {data_folder}{historical_data_folder}"
             )
         else:
             print(
@@ -103,7 +103,10 @@ def main(start_date="2012-01-01", end_date="2022-01-01"):
             # Download shares data
         shares_data = download_shares(ticker)
         if shares_data is not None:
-            print(f"Downloaded shares data for {ticker} {data_folder}{shares_folder}")
+            count_sh += 1
+            print(
+                f"Downloaded {count_sh} shares data for {ticker} {data_folder}{shares_folder}"
+            )
         else:
             print(
                 f"Failed to Download shares data for {ticker} to {data_folder}{shares_folder}"
@@ -112,13 +115,15 @@ def main(start_date="2012-01-01", end_date="2022-01-01"):
             # Download earnings data
         earnings_data = download_earnings(ticker)
         if earnings_data is not None:
+            count_e += 1
             print(
-                f"Downloaded earnings data for {ticker} to {data_folder}{earnings_folder}"
+                f"Downloaded {count_e} earnings data for {ticker} to {data_folder}{earnings_folder}"
             )
         else:
             print(
                 f"Failed to Download and earnings data for {ticker} to {data_folder}{earnings_folder}"
             )
+    print(count_h, count_sh, count_e)
 
 
 if __name__ == "__main__":

@@ -15,7 +15,7 @@ def delete_all_objects_in_bucket(bucket_name):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Delete all objects in an S3 bucket")
     parser.add_argument(
-        "--bucket", default="testbucket", help="S3 bucket name (default: bronzelayer)"
+        "--bucket", default="bronzelayer", help="S3 bucket name (default: bronzelayer)"
     )
     args = parser.parse_args()
 

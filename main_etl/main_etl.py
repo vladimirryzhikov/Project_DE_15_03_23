@@ -79,7 +79,7 @@ def main():
     tickers = tickers_table["Symbol"].tolist()
     # Change the two elements of the list of tickers prior to wrong names
     tickers[tickers.index("BRK.B")] = "BRK-B"
-    # tickers[tickers.index("BRK.H")] = "BRK-H"
+    tickers[tickers.index("BRK.H")] = "BRK-H"
 
     # Loop over each ticker and download the historical data, shares data, and earnings data
     for ticker in tickers:
