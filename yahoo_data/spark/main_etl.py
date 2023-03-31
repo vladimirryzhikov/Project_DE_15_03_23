@@ -6,7 +6,6 @@ from pyspark.sql.types import (
     StructField,
     StringType,
     DoubleType,
-    IntegerType,
     DateType,
     LongType,
 )
@@ -87,6 +86,33 @@ def load_shares_data(spark, source_bucket, ticker):
     return shares_df
 
 
+def load_earnings_data(spark, source_bucket, ticker):
+    """Loads the earnings data from s3 bucket and return a dataframe"""
+
+    s3_earnings_folder_path = f"s3a://{source_bucket}/data/earnings/"
+    s3_earnings_path = s3_earnings_folder_path + f"{ticker}.csv"
+
+    # Define the schema for the earnings dataframe
+    schema_earnings = StructType(
+        [
+            StructField("Earnings Date", DateType()),
+            StructField("EPS Estimate", DoubleType()),
+            StructField("Reported EPS", DoubleType()),
+            StructField("Surprise(%)", DoubleType()),
+        ]
+    )
+    # Load the earnings data from s3
+    earnings_df = spark.read.csv(s3_earnings_path, header=True, schema=schema_earnings)
+    # Convert the date column to DateType
+    earnings_df = earnings_df.withColumn(
+        "Earnings Date", to_date("Earnings Date", "yyyy-MM-dd")
+    )
+    # Droping
+    earnings_df = earnings_df.drop("EPS Estimate", "Surprise(%)")
+
+    return earnings_df
+
+
 def calculate_average_close_price(df):
     """
     Calculates the average closing price for each year and returns a dataframe.
@@ -102,6 +128,14 @@ def calculate_average_close_price(df):
     return avg_close_df
 
 
+def calculate_market_cap(df):
+    """Calculates the market cap for each day"""
+    df = df.withColumn("Market Cap", col("Shares").cast("double") * col("Close"))
+    # format the market cap column
+    market_cup = df.withColumn("Market Cap", format_number(col("Market Cap"), 2))
+    return market_cup
+
+
 def main():
     # Define the S3 bucket and ticker for the data to be loaded
     source_bucket = "bronzelayer"
@@ -111,10 +145,10 @@ def main():
     # Create the Spark session
     spark = create_spark_session()
 
-    # Load the historical data and shares data
+    # Load the historical data and shares data and earnings data
     historical_df = load_historical_data(spark, source_bucket, ticker)
     shares_df = load_shares_data(spark, source_bucket, ticker)
-
+    earnings_df = load_earnings_data(spark, source_bucket, ticker)
     # Join the historical and shares dataframes on the date column
     joined_df = historical_df.join(shares_df, "Date")
 
@@ -129,9 +163,12 @@ def main():
 
     # testing not to production
     # joined_df = joined_df.drop("Open", "High", "Low", "Adj Close")
+
+    joined_df = calculate_market_cap(joined_df)
     joined_df.show(joined_df.count(), False)
     print(joined_df.count())
     avg_close_df.show()
+    earnings_df.show()
 
 
 if __name__ == "__main__":
